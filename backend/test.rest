@@ -1,0 +1,158 @@
+### Chat App API Tests
+
+# Base URL
+@baseUrl = http://localhost:5000
+
+### ===== AUTHENTICATION ENDPOINTS =====
+
+### 1. Sign Up
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### 2. Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### 3. Logout
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+### 4. Check Auth Status (Protected Route)
+GET {{baseUrl}}/api/auth/check
+Content-Type: application/json
+
+### 5. Update Profile (Protected Route)
+PUT {{baseUrl}}/api/auth/update-profile
+Content-Type: application/json
+
+{
+  "profilePic": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
+}
+
+### ===== MESSAGE ENDPOINTS =====
+
+### 6. Get Users for Sidebar (Protected Route)
+GET {{baseUrl}}/api/messages/users
+Content-Type: application/json
+
+### 7. Get Messages with Specific User (Protected Route)
+# First get users list, then replace USER_ID_HERE with actual user ID
+GET {{baseUrl}}/api/messages/USER_ID_HERE
+Content-Type: application/json
+
+### 8. Send Message to User (Protected Route)
+# First get users list, then replace USER_ID_HERE with actual user ID
+POST {{baseUrl}}/api/messages/send/USER_ID_HERE
+Content-Type: application/json
+
+{
+  "text": "Hello! This is a test message.",
+  "image": ""
+}
+
+### ===== EXAMPLE WORKFLOW =====
+
+### Step 1: Create a test user
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "test@example.com",
+  "password": "test123"
+}
+
+### Step 2: Login with test user
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "test123"
+}
+
+### Step 3: Check if authenticated
+GET {{baseUrl}}/api/auth/check
+Content-Type: application/json
+
+### Step 4: Get all users for sidebar
+GET {{baseUrl}}/api/messages/users
+Content-Type: application/json
+
+### Step 5: Send a message (replace USER_ID_HERE with actual user ID from step 4)
+POST {{baseUrl}}/api/messages/send/USER_ID_HERE
+Content-Type: application/json
+
+{
+  "text": "Hello from test user!",
+  "image": ""
+}
+
+### Step 6: Get messages with that user
+GET {{baseUrl}}/api/messages/USER_ID_HERE
+Content-Type: application/json
+
+### ===== TESTING WORKFLOW (Follow this order) =====
+
+### A. Create first test user
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "fullName": "Alice Smith",
+  "email": "alice@test.com",
+  "password": "test123"
+}
+
+### B. Create second test user
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "fullName": "Bob Johnson",
+  "email": "bob@test.com",
+  "password": "test123"
+}
+
+### C. Login as Alice
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@test.com",
+  "password": "test123"
+}
+
+### D. Get users list (copy Bob's _id from response)
+GET {{baseUrl}}/api/messages/users
+Content-Type: application/json
+
+### E. Send message to Bob (replace with Bob's actual _id)
+POST {{baseUrl}}/api/messages/send/PASTE_BOBS_ID_HERE
+Content-Type: application/json
+
+{
+  "text": "Hello Bob! This is Alice.",
+  "image": ""
+}
+
+### F. Get messages with Bob (replace with Bob's actual _id)
+GET {{baseUrl}}/api/messages/PASTE_BOBS_ID_HERE
+Content-Type: application/json
+
+### ===== NOTES =====
+# - All message endpoints require authentication (cookies)
+# - Update profile and check auth also require authentication
+# - After login, cookies will be automatically included in subsequent requests
+# - Copy actual MongoDB ObjectId from step D response (looks like: 507f1f77bcf86cd799439011)
